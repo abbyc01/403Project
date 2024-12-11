@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Attendance</title>
+  <link rel="stylesheet" href="/style.css"> <!-- Adjust the CSS path as needed -->
+  <script>
+    // Function to update point value based on selected description
+    function updatePointValue() {
+      var description = document.getElementById("AttenDescription").value;
+      var pointValue = document.getElementById("AttenPointValue");
+
+      // Point values for different descriptions (you can modify these based on your requirements)
+      var pointValues = {
+        "Sick": 2,
+        "No Show": 0,
+        "Vacation": 3,
+        "Holiday": 5
+        // Add more descriptions and their point values as needed
+      };
+
+      // Set the point value based on the selected description
+      pointValue.value = pointValues[description] || 0; // Default to 0 if no match
+    }
+  </script>
+</head>
+<body>
+  <h1>Edit Attendance</h1>
+  
+  <form action="/editAttendance/<%= attendance.AttendanceID %>" method="POST">
+    <div>
+      <label for="AttenDate">Attendance Date:</label>
+      <input type="date" id="AttenDate" name="AttenDate" value="<%= new Date(attendance.AttenDate).toISOString().split('T')[0] %>" required>
+    </div>
+
+    <!-- Dropdown for Attendance Description -->
+    <div>
+      <label for="AttenDescription">Attendance Description:</label>
+      <select id="AttenDescription" name="AttenDescription" onchange="updatePointValue()" required>
+        <% descriptions.forEach(description => { %>
+          <option value="<%= description.AttenDescription %>" <%= description.AttenDescription === attendance.AttenDescription ? "selected" : "" %>><%= description.AttenDescription %></option>
+        <% }) %>
+      </select>
+      
+    </div>
+
+    <!-- Hidden input for Point Value, updated dynamically based on the selected description -->
+    <div>
+      <label for="AttenPointValue">Attendance Points:</label>
+      <input type="number" id="AttenPointValue" name="AttenPointValue" value="<%= attendance.AttenPointValue %>" readonly required>
+    </div>
+
+    <button type="submit">Update Attendance</button>
+  </form>
+  
+  <a href="/viewAttendance">Back to Attendance List</a>
+  <script>
+    // Function to update point value based on selected description
+    function updatePointValue() {
+      var description = document.getElementById("AttenDescription").value;
+      var pointValue = document.getElementById("AttenPointValue");
+  
+      // Create an object to store descriptions and point values dynamically
+      var pointValues = <%= JSON.stringify(descriptions) %>;
+  
+      // Find the point value for the selected description
+      var selectedDescription = pointValues.find(d => d.AttenDescription === description);
+  
+      // Set the point value based on the selected description
+      pointValue.value = selectedDescription ? selectedDescription.AttenPointValue : 0; // Default to 0 if no match
+    }
+  
+    // Call the updatePointValue function when the page loads to initialize the point value
+    window.onload = function() {
+      updatePointValue();
+    }
+  </script>
+  
+</body>
+</html>

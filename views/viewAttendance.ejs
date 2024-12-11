@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Attendance</title>
+    <link rel="stylesheet" href="/style.css" />
+    <!-- Adjust the CSS path as needed -->
+  </head>
+  <body>
+    <h1>Employee Attendance</h1>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Employee Name</th>
+          <th>Attendance Date</th>
+          <th>Attendance Points</th>
+          <th>Description</th>
+          <th>Action</th>
+          <!-- New header for action column -->
+        </tr>
+      </thead>
+      <tbody>
+        <% attendanceData.forEach(record => { %> <% if (record.AttenPointValue >
+        0) { %>
+        <!-- Ensure no rows with 0 points are displayed -->
+        <tr>
+          <td><%= record.EmpFirstName %> <%= record.EmpLastName %></td>
+          <td><%= new Date(record.AttenDate).toLocaleDateString() %></td>
+          <td><%= record.AttenPointValue %></td>
+          <td><%= record.AttenDescription %></td>
+          <td>
+            <!-- Edit button, linking to the edit page for this attendance record -->
+            <a href="/editAttendance/<%= record.AttendanceID %>">
+              <button>Edit</button>
+            </a>
+          </td>
+        </tr>
+        <% } %>
+        <!-- End check for 0 points -->
+        <% }) %>
+      </tbody>
+    </table>
+  </body>
+</html>
